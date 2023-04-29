@@ -1,8 +1,8 @@
-// 测试别的 api 入口inte.net  落地ip-api(入口真实城市 运营商 落地真实位置) @Key @奶茶姐
+// 66 测试别的 api 入口inte.net  落地ip-api(入口真实城市 运营商 落地真实位置) @Key @奶茶姐
 // Sub-Store脚本操作:例如: https://keywos.cf/name_kkk.js#flag&timeout=1000
 // 参数 timeout=900  ！默认1000单位ms
 const timeout = $arguments["timeout"] ? $arguments["timeout"] : 1000;
-// 参数 flag 参数为加 国旗、运营商:首字母 🅳电信 🅻联通 🆈移动 ！默认不加
+// 参数 flag 参数为加 国旗、运营商:首字母 🅳=电信,🅻=联通,🆈=移动,🆉直连 ！默认不加 
 const flag = $arguments["flag"];
 // 参数 city 则为入口城市，！默认不加参数则是省份
 const citys = $arguments["city"];
@@ -12,6 +12,11 @@ const $ = $substore
 const { isLoon, isSurge, isQX } = $substore.env;
 const target = isLoon ? "Loon" : isSurge ? "Surge" : isQX ? "QX" : undefined;
 async function operator(proxies) {
+  const support = (isLoon || isSurge);
+  if (!support) {
+    $.error(`Only supports Loon and Surge!`);
+    return proxies;
+  }
   const startTime = new Date(); // 获取当前时间作为开始时间
   const prs = proxies.length; //初始节点数
   // console.log("初始节点数 = " + proxies.length);
