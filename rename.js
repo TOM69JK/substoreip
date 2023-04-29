@@ -1,13 +1,14 @@
-// 测试别的api 入口inte.net  落地ip-api(入口真实城市 运营商 落地真实位置)
-// timeout=900     默认1000单位ms
+// 测试别的 api 入口inte.net  落地ip-api(入口真实城市 运营商 落地真实位置) @Key @奶茶姐
+// Sub-Store脚本操作:例如: https://keywos.cf/name_kkk.js#flag&timeout=1000
+// 参数 timeout=900  ！默认1000单位ms
 const timeout = $arguments["timeout"] ? $arguments["timeout"] : 1000;
-// 加国旗 和运营商 首字母 🅳电信 🅻联通 🆈移动
+// 参数 flag 参数为加 国旗、运营商:首字母 🅳电信 🅻联通 🆈移动 ！默认不加
 const flag = $arguments["flag"];
-// 添加city则为入口城市，不加参数则是省份
+// 参数 city 则为入口城市，！默认不加参数则是省份
 const citys = $arguments["city"];
-// 一次检查多少节点 默认16
+// 参数 batch=  一次检查多少节点 ！默认16
 const batch_size = $arguments["batch"] ? $arguments["batch"] : 16;
-const $ = $substore;
+const $ = $substore
 const { isLoon, isSurge, isQX } = $substore.env;
 const target = isLoon ? "Loon" : isSurge ? "Surge" : isQX ? "QX" : undefined;
 async function operator(proxies) {
@@ -20,7 +21,6 @@ async function operator(proxies) {
     await Promise.allSettled(
       batch.map(async (proxy) => {
         try {
-          //   查询入口IP信息 alidns
           //   const in_info = await queryDNSInfo(proxy.server);
           //   console.log(proxy.server + "in节点ip = " + JSON.stringify(in_info));
           //   🅳电信
@@ -41,16 +41,13 @@ async function operator(proxies) {
               : in_info.data[in_info.data.length - 1] === "移动"
               ? "🆈"
               : "";
-
           //   let dly = '';
           //   if (in_info.data[in_info.data.length - 1] === '电信') {
           //     dly = 'D';
           //   } else if (in_info.data[in_info.data.length - 1] === '联通') {
           //     dly = 'L';
           //   }
-
           // console.log("in节点信息🍉" + JSON.stringify(in_info));
-
           // 查询出口IP信息
           const out_info = await queryIpApi(proxy);
           //   console.log(proxy.server + "out节点信息 = " + JSON.stringify(out_info));
@@ -73,7 +70,7 @@ async function operator(proxies) {
             }
           } else {
             // no emoji
-            // proxy.name = out_info.country;
+            // proxy.name = out_info.country; 只有国家
             if (in_info.ip === out_info.query) {
               proxy.name =
                 "直连" +
@@ -81,7 +78,7 @@ async function operator(proxies) {
                 getFlagEmoji(out_info.countryCode) +
                 out_info.country;
             } else {
-              proxy.name = incity + "→" + out_info.country;
+              proxy.name = incity+in_info.data[in_info.data.length - 1] + "→" + out_info.country;
             }
           }
 
@@ -137,7 +134,7 @@ async function queryDNSInfo(server) {
       });
   });
 }
-// //baiduapi解析位置 弃用
+// //baiduapi解析位置 弃
 // //http://opendata.baidu.com/api.php?query=112.34.112.246&co=&resource_id=6006&oe=utf8
 // async function queryDNSInfo(serverip) {
 //     return new Promise((resolve) => {
@@ -159,7 +156,7 @@ async function queryDNSInfo(server) {
 //         });
 //     });
 // //   }
-// // 查询落地ip 没有中文 弃用
+// // 查询落地ip 没有中文 弃
 // async function queryIpApi(proxy) {
 //   return new Promise((resolve, reject) => {
 //     const url = `http://v4.ident.me/json`;
